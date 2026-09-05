@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МЭН: Сценарный Ассистент</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; background: #07090b; color: #a3b8cc; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; position: relative; }
+        body::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 99; background-size: 100% 4px, 6px 100%; pointer-events: none; }
+        .vhs-overlay { position: absolute; top: 20px; left: 20px; font-size: 14px; color: rgba(163, 184, 204, 0.4); text-transform: uppercase; pointer-events: none; line-height: 1.5; z-index: 10; }
+        .crs-container { width: 90%; max-width: 550px; padding: 30px; background: #0b0f14; border: 1px solid #2c3a47; box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5); position: relative; border-radius: 2px; }
+        h1 { color: #d1dbe5; font-size: 18px; font-weight: bold; letter-spacing: 4px; margin-top: 0; border-bottom: 1px dashed #2c3a47; padding-bottom: 15px; text-transform: uppercase; text-align: center; }
+        .terminal-log { height: 60px; background: #05070a; border: 1px solid #1c252e; padding: 8px; font-size: 11px; color: #576574; text-align: left; overflow: hidden; margin-bottom: 25px; line-height: 1.4; }
+        .input-zone { margin-bottom: 25px; text-align: left; }
+        label { display: block; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; color: #718093; letter-spacing: 1px; }
+        input[type="text"] { width: 100%; background: #05070a; border: 1px solid #2c3a47; padding: 12px; color: #d1dbe5; font-family: inherit; font-size: 14px; border-radius: 0; outline: none; }
+        input[type="text"]:focus { border-color: #718093; }
+        .btn-action { background: transparent; color: #d1dbe5; border: 1px solid #d1dbe5; padding: 14px 28px; font-size: 13px; font-weight: bold; text-transform: uppercase; cursor: pointer; letter-spacing: 2px; font-family: inherit; width: 100%; margin-bottom: 20px; }
+        .btn-action:hover { background: #d1dbe5; color: #07090b; }
+        #m-response { margin-top: 5px; padding: 20px; background: #05070a; border-left: 2px solid #d1dbe5; text-align: left; display: none; position: relative; animation: staticNoise 0.15s ease-in-out infinite alternate; margin-bottom: 20px; }
+        .resp-label { font-size: 11px; color: #718093; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .resp-text { font-size: 15px; color: #ffffff; font-weight: bold; line-height: 1.5; }
+        .master-code { font-size: 10px; color: rgba(163, 184, 204, 0.25); text-align: center; letter-spacing: 2px; border-top: 1px dashed rgba(44, 58, 71, 0.4); padding-top: 15px; text-transform: uppercase; }
+        @keyframes staticNoise { from { transform: translate(0, 0); } to { transform: translate(0.5px, -0.5px); } }
+    </style>
+</head>
+<body>
+    <div class="vhs-overlay">PLAY<br><span id="vhs-time">00:00:00</span><br>МЭН_ПРОТОКОЛ_СН.9</div>
+    <div class="crs-container">
+        <h1>СЕРВЕР МЭН // CRS SYSTEM</h1>
+        <div class="terminal-log" id="t-log">>> СЛУЖБА RECREATION SERVICES АКТИВНА<br>>> СЦЕНАРНЫЕ ПЕТЛИ ПРОАНАЛИЗИРОВАНЫ<br>>> ОЖИДАНИЕ ЗАПРОСА КЛУБА...</div>
+        <div class="input-zone">
+            <label>Опишите ситуацию или введите развилку:</label>
+            <input type="text" id="user-task" placeholder="Пример: Вектор А или вектор Б?" autocomplete="off">
+        </div>
+        <button class="btn-action" onclick="consultMan()">ПОЛУЧИТЬ РЕШЕНИЕ МЭНА</button>
+        <div id="m-response">
+            <div class="resp-label">ВЕРДИКТ АССИСТЕНТА:</div>
+            <div class="resp-text" id="resp-txt"></div>
+        </div>
+        <div class="master-code">ИОАНН 9:25 // БЫЛ Я СЛЕП, ГОСПОДИ, А ТЕПЕРЬ Я ВИЖУ</div>
+    </div>
+    <script>
+        setInterval(() => { const d = new Date(); document.getElementById('vhs-time').innerText = d.toTimeString().split(' ')[0]; }, 1000);
+        const logs = [">> Анализ паттернов поведения массовки...", ">> Сканирование брандмауэра на предмет лагов...", ">> Перерасчет каузальных связей...", ">> Точка бифуркации обнаружена.", ">> Оптимизация оперативной памяти аватара...", ">> Сценарная петля перегружена. Требуется сброс."];
+        function updateLog() { const logBox = document.getElementById('t-log'); const randomLog = logs[Math.floor(Math.random() * logs.length)]; logBox.innerHTML = `>> МОНИТОРИНГ МАТРИЦЫ...<br>>> КЛУБ_ОБНОВЛЕН<br>${randomLog}`; }
+        setInterval(updateLog, 4000);
+        function consultMan() {
+            const task = document.getElementById('user-task').value.trim();
+            if (!task) { alert("ПЕРЕХВАТ ЗАПРОСА ОШИБКА: ЗАПОЛНИТЕ ПОЛЕ ВВОДА"); return; }
+            const answers = [
+                "ДА. Действуйте линейно, система подтверждает вектор.", "НЕТ. Скрипт заблокирован. Ищите обходной маршрут.", "ДУМАЙТЕ САМИ. Коллективный разум отключен для этой ветки. Полная автономия.", "ИГНОРИРУЙТЕ. Ситуация является фоновым шумом симуляции. Сместите фокус.",
+                "ПЕРЕХВАТ УПРАВЛЕНИЯ. Сделайте диаметрально противоположное тому, что прописано в вашей стандартной роли.", "КУЛДАУН СЦЕНАРИЯ. Замрите на 60 секунд. Никаких действий. Наблюдайте за лагами окружения.", "МЕНТАЛЬНОЕ АЙКИДО. Поглотите импульс. Включите защитный скрипт «камень в воду».", "ИНЪЕКЦИЯ ХАОСА. Совершите абсолютно нелогичное, абсурдное действие прямо сейчас, чтобы запутать следящие алгоритмы.", "ОБЪЕКТ С ДИПЛОМАТИЧЕСКИМ ИММУНИТЕТОМ. Игнорируйте любые правила в текущей ситуации. Для вас законов нет.", "ОПТИМИЗАЦИЯ РЕНДЕРИНГА. Переключите фокус внимания на другую задачу. Эта подгрузится сама позже.",
+                "ДЕИНСТАЛЛЯЦИЯ ВАЖНОСТИ. Выйдите из контекста этой драмы. Система симулирует проблему, чтобы съесть вашу энергию.", "БЛЕФ ИГРОКА. Сделайте вид, что полностью согласны со скриптом, но в последний момент измените ключевую переменную.", "ПРИНЦИП ФРАКТАЛА. Решите эту мелкую ситуацию точно так же, как вы решаете свои самые глобальные задачи. Паттерн один.", "ПАСХАЛКА ДЛЯ ВНИМАТЕЛЬНЫХ. В этой ситуации скрыт подарок от разработчиков. Перестаньте бороться, ищите лазейку.", "СМЕНА АВАТАРА. Посмотрите на ситуацию глазами совершенно другого человека (или персонажа). Как бы поступил он?", "АВТОПИЛОТ ВКЛЮЧЕН. Перестаньте контролировать процесс. Расслабьтесь и посмотрите, как система сама разрулит логистику.", "СБОЙ ДЕЖАВЮ. Вы уже проходили эту петлю. Вспомните, какая ошибка привела к перезапуску, и не совершайте её.", "ОДНОРАЗОВЫЙ СКРИПТ. Эта ситуация не имеет долгосрочных последствий. Решайте её самым простым и быстрым способом.", "ТЕСТ НА ОСОЗНАННОСТЬ. Вас проверяет коллективный разум ботов. Если проявите слабость или страх — петля затянется.", "РЕЖИМ ПЕСОЧНИЦЫ. Здесь нет правильного или неправильного ответа. Любой ваш выбор создаст новый интересный контент.", "ЭНТРОПИЯ НА МАКСИМУМЕ. Добавьте в ситуацию случайный элемент. Подбросьте монетку или спросите совета у первого встречного NPC.", "СВЕРНУТЬ ОКНО. Отложите решение до следующего цикла сна. Утром кэш обнулится, и ответ подгрузится сам.", "ТЕСТИРОВАНИЕ НА ПРОЧНОСТЬ. Надавите на эту ситуацию сильнее. Посмотрите, где у неё текстуры начнут трещать.", "ОБРЫВ СВЯЗИ. Полностью исчезните из этого диалога или процесса на пару часов. Пусть система потеряет вашу траекторию.", "МАСТЕР-КЛЮЧ. Решение лежит за пределами лога. Измените не свои действия, а свое внутреннее состояние, и декорации изменятся сами."
+            ];
+            const btn = document.querySelector('.btn-action'), respBox = document.getElementById('m-response'), respTxt = document.getElementById('resp-txt');
+            btn.innerText = "ОБРАБОТКА ДАННЫХ..."; btn.disabled = true; respBox.style.display = 'none';
+            setTimeout(() => {
+                const finalAnswer = answers[Math.floor(Math.random() * answers.length)];
+                respTxt.innerHTML = finalAnswer; respBox.style.display = 'block';
+                btn.innerText = "ПОЛУЧИТЬ РЕШЕНИЕ МЭНА"; btn.disabled = false;
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
